@@ -1,10 +1,12 @@
 package cn.sd.game.ui;
 
 import cn.sd.game.ui.base.AbstractWindow;
+import cn.sd.game.ui.util.Constant;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +111,12 @@ public class MetalUserInterfaceManger extends JPanel {
         super.paintComponent(g);
         for (AbstractWindow window : windowList) {
             if (window.isVisible()) {
-                window.paint(g);
+                BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+                window.paint(image);
+                if (!window.isActive()) {
+                    image = Constant.blur(image);
+                }
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
             }
         }
     }

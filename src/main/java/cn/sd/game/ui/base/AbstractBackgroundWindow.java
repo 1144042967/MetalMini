@@ -1,5 +1,8 @@
 package cn.sd.game.ui.base;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 /**
  * Created with Software Dept.
  * <p>
@@ -9,5 +12,22 @@ package cn.sd.game.ui.base;
  * Time: 16:12
  * Description: AbstractBackgroundWindow 带背景的窗口
  */
-public abstract class AbstractBackgroundWindow extends AbstractWindow {
+public class AbstractBackgroundWindow extends AbstractWindow {
+    private Color front;
+    private Color background;
+
+    public AbstractBackgroundWindow(Color front, Color background) {
+        this.front = front;
+        this.background = background;
+    }
+
+    @Override
+    public void paint(BufferedImage image) {
+        Graphics g = image.getGraphics();
+        if (isActive()) {
+            fillRect(g, front, getLocation());
+        } else {
+            fillRect(g, background, getLocation());
+        }
+    }
 }

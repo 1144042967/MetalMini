@@ -36,6 +36,7 @@ public class MainController {
         frame.setSize(1024, 768);
         frame.setContentPane(manger);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         new Timer(40, e -> {

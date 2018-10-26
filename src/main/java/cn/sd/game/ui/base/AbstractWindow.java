@@ -68,10 +68,6 @@ public abstract class AbstractWindow implements InterfaceWindow {
     }
 
     @Override
-    public void paint(Graphics g) {
-    }
-
-    @Override
     public void keyTyped(KeyEvent e) {
     }
 
@@ -113,5 +109,39 @@ public abstract class AbstractWindow implements InterfaceWindow {
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+    }
+
+    /**
+     * 画矩形框
+     */
+    protected void drawRect(Graphics g, Color color, int x, int y, int w, int h) {
+        Color c = g.getColor();
+        g.setColor(color);
+        g.drawRect(x, y, w, h);
+        g.setColor(c);
+    }
+
+    /**
+     * 画矩形框
+     */
+    protected void drawRect(Graphics g, Color color, Location location) {
+        drawRect(g, color, location.x, location.y, location.w, location.h);
+    }
+
+    /**
+     * 填充矩形
+     */
+    protected void fillRect(Graphics g, Color color, int x, int y, int w, int h) {
+        Color c = g.getColor();
+        g.setColor(color);
+        g.fillRect(x, y, w, h);
+        g.setColor(c);
+    }
+
+    /**
+     * 填充矩形
+     */
+    protected void fillRect(Graphics g, Color color, Location location) {
+        fillRect(g, color, location.x, location.y, location.w, location.h);
     }
 }

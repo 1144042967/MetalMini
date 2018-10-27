@@ -1,12 +1,12 @@
 package cn.sd.game.ui;
 
 import cn.sd.game.ui.base.AbstractWindow;
+import cn.sd.game.ui.domain.Location;
 import cn.sd.game.ui.util.Constant;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * @author : 江荣展
  * Date: 2018-10-20
  * Time: 16:00
- * Description: MetalUserInterfaceManger 主面板
+ * Description: MetalUserInterfaceManger 主面板窗口控制器
  */
 public class MetalUserInterfaceManger extends JPanel {
 
@@ -101,22 +101,39 @@ public class MetalUserInterfaceManger extends JPanel {
         });
     }
 
-
+    /**
+     * 注册窗口
+     *
+     * @param window 窗口
+     */
     public void addWindow(AbstractWindow window) {
         windowList.add(window);
+        window.setManger(this);
+    }
+
+    /**
+     * 将窗口浮到上面来
+     *
+     * @param window 窗口
+     */
+    public synchronized void bubble(AbstractWindow window) {
+        ArrayList<AbstractWindow> newList = new ArrayList<>(windowList);
+        if (newList.contains(window)) {
+            newList.remove(window);
+            newList.add(window);
+        }
+        windowList = newList;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        //绘制背景
+        g.drawImage(Constant.IMAGE, 0, 0, getWidth(), getHeight(), null);
         for (AbstractWindow window : windowList) {
             if (window.isVisible()) {
-                BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-                window.paint(image);
-                if (!window.isActive()) {
-                    image = Constant.blur(image);
-                }
-                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+                //绘制可见窗口
+                Location location = window.getLocation();
+                g.drawImage(window.getImage(), location.x, location.y, location.x + location.w, location.y + location.h, 0, 0, location.w, location.h, null);
             }
         }
     }

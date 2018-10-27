@@ -1,12 +1,12 @@
 package cn.sd.game.ui.base;
 
+import cn.sd.game.ui.MetalUserInterfaceManger;
 import cn.sd.game.ui.domain.Location;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.List;
+import java.awt.image.BufferedImage;
 
 /**
  * Created with Software Dept.
@@ -19,28 +19,49 @@ import java.util.List;
  */
 public abstract class AbstractWindow implements InterfaceWindow {
     /**
+     * 布局管理器
+     */
+    protected MetalUserInterfaceManger manger;
+    /**
+     * 缓存的图片
+     */
+    protected volatile BufferedImage image;
+    /**
      * 位置
      */
-    private Location location;
+    protected volatile Location location;
     /**
      * 可视
      */
-    private boolean visible = false;
+    private volatile boolean visible = false;
     /**
      * 前台活动状态
      */
-    private boolean active = false;
-    /**
-     * 子窗口列表
-     */
-    private List<AbstractWindow> sonWindowList;
+    private volatile boolean active = false;
+
+    public MetalUserInterfaceManger getManger() {
+        return manger;
+    }
+
+    public void setManger(MetalUserInterfaceManger manger) {
+        this.manger = manger;
+    }
+
+    public BufferedImage getImage() {
+        return image;
+    }
 
     public Location getLocation() {
         return location;
     }
 
     public void setLocation(Location location) {
+        Location local = this.location;
         this.location = location;
+        if (local == null || local.w != location.w || local.h != location.h) {
+            this.image = new BufferedImage(location.w, location.h, BufferedImage.TYPE_INT_ARGB);
+            this.update();
+        }
     }
 
     public boolean isVisible() {
@@ -49,6 +70,7 @@ public abstract class AbstractWindow implements InterfaceWindow {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+        this.update();
     }
 
     public boolean isActive() {
@@ -56,16 +78,16 @@ public abstract class AbstractWindow implements InterfaceWindow {
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        if (this.active != active) {
+            this.active = active;
+            this.update();
+        }
     }
 
-    public List<AbstractWindow> getSonWindowList() {
-        return sonWindowList;
-    }
-
-    public void setSonWindowList(List<AbstractWindow> sonWindowList) {
-        this.sonWindowList = sonWindowList;
-    }
+    /**
+     * 刷新画面
+     */
+    protected abstract void update();
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -109,39 +131,5 @@ public abstract class AbstractWindow implements InterfaceWindow {
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-    }
-
-    /**
-     * 画矩形框
-     */
-    protected void drawRect(Graphics g, Color color, int x, int y, int w, int h) {
-        Color c = g.getColor();
-        g.setColor(color);
-        g.drawRect(x, y, w, h);
-        g.setColor(c);
-    }
-
-    /**
-     * 画矩形框
-     */
-    protected void drawRect(Graphics g, Color color, Location location) {
-        drawRect(g, color, location.x, location.y, location.w, location.h);
-    }
-
-    /**
-     * 填充矩形
-     */
-    protected void fillRect(Graphics g, Color color, int x, int y, int w, int h) {
-        Color c = g.getColor();
-        g.setColor(color);
-        g.fillRect(x, y, w, h);
-        g.setColor(c);
-    }
-
-    /**
-     * 填充矩形
-     */
-    protected void fillRect(Graphics g, Color color, Location location) {
-        fillRect(g, color, location.x, location.y, location.w, location.h);
     }
 }

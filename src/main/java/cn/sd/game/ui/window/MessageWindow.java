@@ -1,7 +1,7 @@
 package cn.sd.game.ui.window;
 
 import cn.sd.game.ui.base.AbstractWindow;
-import cn.sd.game.ui.domain.Location;
+import cn.sd.game.ui.util.Constant;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -17,25 +17,20 @@ import java.awt.image.BufferedImage;
  * Description: MessageWindow
  */
 public class MessageWindow extends AbstractWindow {
-    private Graphics g;
 
     @Override
-    public void paint(BufferedImage image) {
-        this.g = image.getGraphics();
-        Color title = new Color(Color.BLACK.getRed(), Color.BLACK.getGreen(), Color.BLACK.getBlue(), 50);
-        Color bg = new Color(Color.LIGHT_GRAY.getRed(), Color.LIGHT_GRAY.getGreen(), Color.LIGHT_GRAY.getBlue(), 50);
-        Color board = bg;
+    public void update() {
+        BufferedImage image = new BufferedImage(location.w, location.h, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = image.getGraphics();
         if (this.isActive()) {
-            title = new Color(Color.BLACK.getRed(), Color.BLACK.getGreen(), Color.BLACK.getBlue(), 200);
-            bg = new Color(Color.LIGHT_GRAY.getRed(), Color.LIGHT_GRAY.getGreen(), Color.LIGHT_GRAY.getBlue(), 100);
-            board = title;
+            Constant.fillRect(g, Constant.ACTIVE_TITLE, 0, 0, location.w, 20);
+            Constant.fillRect(g, Constant.ACTIVE_BG, 0, 20, location.w, location.h - 20);
+            Constant.drawRect(g, Constant.ACTIVE_TITLE, 0, 20, location.w - 1, location.h - 21);
+        } else {
+            Constant.fillRect(g, Constant.PASSIVE_TITLE, 0, 0, location.w, 20);
+            Constant.fillRect(g, Constant.PASSIVE_BG, 0, 20, location.w, location.h - 20);
         }
-        Location location = getLocation();
-        fillRect(g, title, location.x, location.y, location.w, 20);
-        fillRect(g, bg, location.x, location.y + 20, location.w, location.h - 20);
-        if (isActive()) {
-            drawRect(g, board, location.x, location.y + 20, location.w - 1, location.h - 21);
-        }
+        this.image = image;
     }
 
 
@@ -45,6 +40,8 @@ public class MessageWindow extends AbstractWindow {
             this.setVisible(!this.isVisible());
         } else if (e.getKeyCode() == KeyEvent.VK_A) {
             this.setActive(!this.isActive());
+            this.update();
+            this.manger.bubble(this);
         }
     }
 }

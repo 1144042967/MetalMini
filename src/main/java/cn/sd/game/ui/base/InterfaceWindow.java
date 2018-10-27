@@ -3,7 +3,6 @@ package cn.sd.game.ui.base;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.image.BufferedImage;
 
 /**
  * Created with Software Dept.
@@ -15,13 +14,6 @@ import java.awt.image.BufferedImage;
  * Description: InterfaceWindow
  */
 public interface InterfaceWindow {
-    /**
-     * 绘制
-     *
-     * @param image 绘图图片
-     */
-    void paint(BufferedImage image);
-
     /**
      * 按下并弹起按键
      *

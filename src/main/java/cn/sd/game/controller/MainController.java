@@ -2,9 +2,12 @@ package cn.sd.game.controller;
 
 import cn.sd.game.ui.MetalUserInterfaceManger;
 import cn.sd.game.ui.domain.Location;
+import cn.sd.game.ui.window.MenuWindow;
 import cn.sd.game.ui.window.MessageWindow;
 
 import javax.swing.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 /**
  * Created with Software Dept.
@@ -28,11 +31,22 @@ public class MainController {
         messageWindow2.setVisible(true);
         messageWindow2.setActive(true);
 
+        MenuWindow menuWindow = new MenuWindow();
+        menuWindow.setLocation(new Location(300,50,300,300));
+        menuWindow.setVisible(true);
+
         MetalUserInterfaceManger manger = new MetalUserInterfaceManger();
         manger.addWindow(messageWindow);
         manger.addWindow(messageWindow2);
+        manger.addWindow(menuWindow);
 
         JFrame frame = new JFrame("TEST");
+        frame.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                manger.requestFocus(true);
+            }
+        });
         frame.setSize(1024, 768);
         frame.setContentPane(manger);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -41,7 +55,6 @@ public class MainController {
 
         new Timer(40, e -> {
             manger.repaint();
-            manger.requestFocus(true);
         }).start();
     }
 

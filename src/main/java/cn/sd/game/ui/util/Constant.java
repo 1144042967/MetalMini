@@ -3,6 +3,8 @@ package cn.sd.game.ui.util;
 import cn.sd.game.ui.domain.Location;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
@@ -13,11 +15,37 @@ import java.awt.image.Kernel;
  * 时间 2018/10/26 22:20
  */
 public class Constant {
-
+    /**
+     * 活动窗口标题
+     */
     public static final Color ACTIVE_TITLE = new Color(Color.BLACK.getRed(), Color.BLACK.getGreen(), Color.BLACK.getBlue(), 255);
+    /**
+     * 活动窗口字体颜色
+     */
+    public static final Color ACTIVE_TITLE_FONT_COLOR = Color.WHITE;
+    /**
+     * 活动窗口字体
+     */
+    public static final Font ACTIVE_TITLE_FONT = new Font("微软雅黑", Font.PLAIN, 12);
+    /**
+     * 活动窗口背景
+     */
     public static final Color ACTIVE_BG = new Color(Color.LIGHT_GRAY.getRed(), Color.LIGHT_GRAY.getGreen(), Color.LIGHT_GRAY.getBlue(), 150);
-
+    /**
+     * 活动窗口背景颜色
+     */
+    public static final Color ACTIVE_BG_FONT_COLOR = Color.BLACK;
+    /**
+     * 活动窗口背景字体
+     */
+    public static final Font ACTIVE_BG_FONT = new Font("微软雅黑", Font.PLAIN, 12);
+    /**
+     * 非活动窗口标题
+     */
     public static final Color PASSIVE_TITLE = new Color(Color.BLACK.getRed(), Color.BLACK.getGreen(), Color.BLACK.getBlue(), 100);
+    /**
+     * 非活动窗口背景
+     */
     public static final Color PASSIVE_BG = new Color(Color.LIGHT_GRAY.getRed(), Color.LIGHT_GRAY.getGreen(), Color.LIGHT_GRAY.getBlue(), 100);
 
     public static final Image IMAGE = Toolkit.getDefaultToolkit().getImage("LF.png");
@@ -52,7 +80,7 @@ public class Constant {
     public static void drawRect(Graphics g, Color color, int x, int y, int w, int h) {
         Color c = g.getColor();
         g.setColor(color);
-        g.drawRect(x, y, w, h);
+        g.drawRect(x, y, w - 1, h - 1);
         g.setColor(c);
     }
 
@@ -80,8 +108,66 @@ public class Constant {
         fillRect(g, color, location.x, location.y, location.w, location.h);
     }
 
-    public static void drawText(String text, Font font, int x, int y) {
-
+    /**
+     * 绘制标题
+     */
+    public static void drawTitle(Graphics g, Color color, String text, Font font, int x, int y, int w, int h) {
+        Color c = g.getColor();
+        g.setColor(color);
+        drawTitle(g, text, font, new Location(x, y, w, h));
+        g.setColor(c);
     }
 
+    /**
+     * 绘制标题
+     */
+    public static void drawTitle(Graphics g, Color color, String text, Font font, Location location) {
+        Color c = g.getColor();
+        g.setColor(color);
+        drawTitle(g, text, font, location);
+        g.setColor(c);
+    }
+
+    private static void drawTitle(Graphics g, String s, Font font, Location r) {
+        FontRenderContext frc = new FontRenderContext(null, true, true);
+        Rectangle2D r2D = font.getStringBounds(s, frc);
+        int rWidth = (int) Math.round(r2D.getWidth());
+        int rHeight = (int) Math.round(r2D.getHeight());
+        int rX = (int) Math.round(r2D.getX());
+        int rY = (int) Math.round(r2D.getY());
+        int a = (r.w / 2) - (rWidth / 2) - rX;
+        int b = (r.h / 2) - (rHeight / 2) - rY;
+        g.setFont(font);
+        g.drawString(s, r.x + a, r.y + b);
+    }
+
+    /**
+     * 绘制内容
+     */
+    public static void drawContent(Graphics g, Color color, String text, Font font, Location location) {
+        Color c = g.getColor();
+        g.setColor(color);
+        drawContent(g, text, font, location);
+        g.setColor(c);
+    }
+
+    private static void drawContent(Graphics g, String s, Font font, Location r) {
+        FontRenderContext frc = new FontRenderContext(null, true, true);
+        Rectangle2D r2D = font.getStringBounds(s.charAt(0) + "", frc);
+        int rWidth = (int) Math.round(r2D.getWidth());
+        int rHeight = (int) Math.round(r2D.getHeight());
+        int rY = (int) Math.round(r2D.getY());
+        int padding = 20;
+        int maxRow = (r.h - padding * 2) / rHeight;
+        int maxCol = (r.w - padding * 2) / rWidth;
+        for (int i = 0; i < maxRow; i++) {
+            for (int j = 0; j < maxCol; j++) {
+                int index = i * maxCol + j;
+                if (index >= s.length()) {
+                    return;
+                }
+                g.drawString(s.charAt(index) + "", r.x + padding + rWidth * j, r.y + padding + rHeight * i - rY);
+            }
+        }
+    }
 }
